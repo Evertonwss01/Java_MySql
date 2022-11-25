@@ -120,7 +120,7 @@ public class UsuarioDao {
 			
 			pstm.execute();
 			System.out.println("Atualizado Concluida !");
-		}catch(SQLException w) {
+		}catch(Exception w) {
 			w.printStackTrace();
 		}
 		finally {
