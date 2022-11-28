@@ -1,3 +1,4 @@
+package br.com.DAO;					// Pacote Atual //
 import br.com.ConexaoBanco.*;		// Pacote Importado para trazer a clsse Conexao com o Banco de Dados //
 import br.com.modelos.*;			// Pacote Importado para trazer a classe Modelo "Usuario" //
 
@@ -5,6 +6,7 @@ import br.com.modelos.*;			// Pacote Importado para trazer a classe Modelo "Usua
 import java.sql.Connection;			// Pacote de Conexao com o Banco SQL //
 import java.sql.PreparedStatement;	// Pacote de Preparacao de Query para ser executada no Banco de Dados //
 import java.sql.ResultSet;			// Pacote
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;				// Pacote para trazer a Data Atual //
@@ -15,7 +17,7 @@ public class UsuarioDao {
 	public void Criar(Usuario uso) {
 		
 		// Variavel String com o comando MySql //
-		String sql = "INSERT INTO Usuario (username, password, dataRegistro)values( ?, ?, ?)";
+		String sql = "INSERT INTO Usuario (nome, username, password, dataRegistro)values( ?, ?, ?, ?)";
 		
 		// Variaveis | "conexao" para conexao com o Banco | "pstm" para Preparar a String para executar no Banco //
 		Connection conexao = null;
@@ -26,9 +28,10 @@ public class UsuarioDao {
 			conexao = Conexao.createConnectionMySQL();
 			pstm = conexao.prepareStatement(sql);
 		// Passa os valores que serão adicionados nos parametros //
-			pstm.setString(1, uso.getLogin());
-			pstm.setString(2, uso.getSenha());
-			pstm.setDate(3, new Date(uso.getDataRegistro().getTime()));
+			pstm.setString(1, uso.getNome());
+			pstm.setString(2, uso.getLogin());
+			pstm.setString(3, uso.getSenha());
+			pstm.setDate(4, new Date(uso.getDataRegistro().getTime()));
 		// Excuta a Query // 
 			pstm.execute();
 			System.out.println("Dados Salvos com Sucesso !");
@@ -74,6 +77,7 @@ public class UsuarioDao {
 				Usuario usu = new Usuario();
 				
 				usu.setId(retorno.getInt("id"));
+				usu.setNome(retorno.getString("nome"));
 				usu.setLogin(retorno.getString("username"));
 				usu.setSenha(retorno.getString("password"));
 				
@@ -99,6 +103,7 @@ public class UsuarioDao {
 		}
 		return pessoa;
 	}
+	
 
 	// Metodo Update //
 	public void Atualizar(Usuario uso) {
@@ -121,7 +126,7 @@ public class UsuarioDao {
 			
 			pstm.execute();
 			System.out.println("Atualização Concluida !");
-		}catch(Exception w) {
+		}catch(SQLException w) {
 			w.printStackTrace();
 		}
 		finally {
@@ -137,18 +142,19 @@ public class UsuarioDao {
 			}
 		}
 	}
-
-
-	public void Deletar(int Id){
-		String sql = "DELETE FROM Usuario WHERE id = ?" ;
-
+	
+	
+	// Metodo Delete //
+	public void Apagar(int id) {
+		String sql = "DELETE FROM Usuario WHERE id = ?";
+		
 		Connection conexao = null;
 		PreparedStatement pstm = null;
 		try{
 			conexao = Conexao.createConnectionMySQL();
 			pstm = conexao.prepareStatement(sql);
 
-			pstm.setInt(1, Id);
+			pstm.setInt(1, id);
 
 			pstm.executeQuery();
 			System.out.println("Dados apagados com Sucesso !");
