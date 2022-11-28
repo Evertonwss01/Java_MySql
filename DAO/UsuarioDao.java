@@ -103,7 +103,7 @@ public class UsuarioDao {
 	// Metodo Update //
 	public void Atualizar(Usuario uso) {
 		
-		String slq = "UPDATE Usuario SET username = ?, password = ?, dataRegistro = ? WHERE id = ?";
+		String slq = "UPDATE Usuario SET nome = ?, username = ?, password = ?, dataRegistro = ? WHERE id = ?";
 		
 		Connection conexao = null;
 		PreparedStatement pstm = null;
@@ -111,15 +111,16 @@ public class UsuarioDao {
 			conexao = Conexao.createConnectionMySQL();
 			pstm = conexao.prepareStatement(slq);
 			
-			pstm.setString(1, uso.getLogin());
-			pstm.setString(2, uso.getSenha());
-			pstm.setDate(3, new Date(uso.getDataRegistro().getTime()));
+			pstm.setString(1, uso.getNome());
+			pstm.setString(2, uso.getLogin());
+			pstm.setString(3, uso.getSenha());
+			pstm.setDate(4, new Date(uso.getDataRegistro().getTime()));
 			
 			// Informar qual será o Id, que será modificado //
-			pstm.setInt(4, uso.getId());
+			pstm.setInt(5, uso.getId());
 			
 			pstm.execute();
-			System.out.println("Atualizado Concluida !");
+			System.out.println("Atualização Concluida !");
 		}catch(Exception w) {
 			w.printStackTrace();
 		}
@@ -136,5 +137,35 @@ public class UsuarioDao {
 			}
 		}
 	}
-	
+
+
+	public void Deletar(int Id){
+		String sql = "DELETE FROM Usuario WHERE id = ?" ;
+
+		Connection conexao = null;
+		PreparedStatement pstm = null;
+		try{
+			conexao = Conexao.createConnectionMySQL();
+			pstm = conexao.prepareStatement(sql);
+
+			pstm.setInt(1, Id);
+
+			pstm.executeQuery();
+			System.out.println("Dados apagados com Sucesso !");
+		}catch(Exception w){
+			w.printStackTrace();
+		}
+		finally{
+			try{
+				if (pstm != null){
+					pstm.close();
+				}
+				if(conexao != null){
+					conexao.close();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
 }
