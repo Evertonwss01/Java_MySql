@@ -1,6 +1,6 @@
-package br.com.DAO;
-import br.com.ConexaoBanco.Conexao;
-import br.com.modelos.Artigo;
+package com.Crudjsp.Dao;
+import com.Crudjsp.Dao.Conexao;
+import com.Crudjsp.modelos.Artigo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,39 +8,63 @@ import java.util.List;
 
 public class ArtigoDao {
 
-	public void CriaArtigo(Artigo art) {
-		
+	public static int CriaArtigo(Artigo art) {
+		int status =0;
 		//int idusu;
-		String sql = "INSERT INTO Artigo (nome, title, resume, text, slug, dataRegistro) VALUES(?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO Artigo (nome, title, resume, text, slug, dataRegistro) VALUES(?, ?, ?, ?, ?);";
 		try {
 			Connection conexao = Conexao.createConnectionMySQL();
 			PreparedStatement pstm = conexao.prepareStatement(sql);
 			
-			pstm.setString(1, art.getNome());
-			pstm.setString(2, art.getTitulo());
-			pstm.setString(3, art.getResumo());
-			pstm.setString(4, art.getTexto());
-			pstm.setString(5, art.getSlug());
-			pstm.setDate(6, new Date(art.getDataRegistro().getTime()));
+			pstm.setString(1, art.getTitulo());
+			pstm.setString(2, art.getResumo());
+			pstm.setString(3, art.getTexto());
+			pstm.setString(4, art.getSlug());
+			pstm.setDate(5, new Date(art.getDataRegistro().getTime()));
 			
-			pstm.execute();
-			System.out.println("Artigo Criado com Sucesso !");
+			status = pstm.executeUpdate();			//System.out.println("Artigo Criado com Sucesso !");
 		}catch(Exception w) {
-			System.out.println("Erro ao Tentar a conexao com o Banco !"+w.getMessage());;
+			//System.out.println("Erro ao Tentar a conexao com o Banco !"+w.getMessage());;
 		}
+		return status;
+	}
+	
+	public Artigo PegarEspecifico(int id) {
+		Artigo art=null;
+		String sql = "SELECT * FROM Artigo WHERE id=?";
+		
+		try {
+			
+			Connection conexao = Conexao.createConnectionMySQL();
+			PreparedStatement pstm = conexao.prepareStatement(sql);
+			pstm.execute();
+			ResultSet retorno = pstm.executeQuery();
+			
+			while(retorno.next()) {
+				art = new Artigo();
+				
+				art.setId(retorno.getInt("id"));
+				art.setTitulo(retorno.getString("title"));
+				art.setResumo(retorno.getString("resume"));
+				art.setTexto(retorno.getString("text"));
+				art.setSlug(retorno.getString("dataRegistro"));
+				
+			}
+		}catch(Exception e) {e.printStackTrace();}
+		
+		return art;
 	}
 	
 	
 	public static int Atualizar(Artigo art) {
 		int status =0;
 		
-		String sql = "UPDATE Artigo SET nome=?, title=?, resume=?, text=?, slug=?, dataRegistro=? WHERE id = ?";
+		String sql = "UPDATE Artigo SET title=?, resume=?, text=?, slug=?, dataRegistro=? WHERE id = ?";
 		
 		try {
 		Connection conexao = Conexao.createConnectionMySQL();
 		PreparedStatement pstm = conexao.prepareStatement(sql);
 		
-		pstm.setString(1, art.getNome());
 		pstm.setString(2, art.getTitulo());
 		pstm.setString(3, art.getResumo());
 		pstm.setString(4, art.getTexto());
@@ -56,7 +80,8 @@ public class ArtigoDao {
 		return status;
 	}
 
-	public static void Apagar(int id) {
+	public static int  Apagar(int id) {
+		int status =0;
 		String sql ="DELETE * FROM Artigo WHERE id =?;";
 		
 		try {
@@ -64,11 +89,12 @@ public class ArtigoDao {
 			PreparedStatement pstm = conexao.prepareStatement(sql);
 			
 			pstm.setInt(1, id);
-			pstm.execute();
+			status = pstm.executeUpdate();
 			
 		}catch(Exception w) {
 			w.printStackTrace();
 		}
+		return status;
 	}
 	
 	public static List<Artigo> pegarLista(){
@@ -80,7 +106,7 @@ public class ArtigoDao {
 			
 			while(retorno.next()) {
 				Artigo art = new Artigo();
-				art.setNome(retorno.getString("nome"));
+				
 				art.setTitulo(retorno.getString("title"));
 				art.setResumo(retorno.getString("resume"));
 				art.setTexto(retorno.getString("text"));
@@ -91,8 +117,6 @@ public class ArtigoDao {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		
-		
 		return lista;
 	} 
 }
