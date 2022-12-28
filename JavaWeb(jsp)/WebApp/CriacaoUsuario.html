@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cadastro</title>
+</head>
+<body>
+	<h1>Criação de Usuario</h1>
+	
+	<form action="Confirmar.jsp">
+		<table>
+			<tr>
+				<td>Nome:</td>
+				<td> <input type="text" name="nome" /></td>
+			</tr>
+			<tr>
+				<td>Password:</td>
+				<td> <input type="password"  name="senha"/> </td>
+			</tr>
+			<tr>
+				<td>Email:</td>
+				<td> <input type="email" name="email" />  </td>
+			</tr>
+			<tr>
+				<td>Sexo:</td>
+				<td> <input type="radio" name="sexo" value="Masculino" />Masculino  
+					<input type="radio" name="sexo" value="Feminino"  />Feminino
+				</td>
+			</tr>
+			<tr>
+				<td>Pais:</td>
+				<td><select name="pais">
+					<option>Brasil </option>
+					<option>EUA</option>
+					<option>Protugual</option>
+					<option>Inglaterra</option>
+					<option>Argentina</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td colspan="2" > <input type="submit" value="Criar"/>  <input type="button" value="Sair" onclick='history.go(-1)' /> </td>
+			</tr>
+		
+		</table>
+	</form>
+</body>
+</html>
